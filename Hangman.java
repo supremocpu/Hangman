@@ -3,13 +3,11 @@ import java.util.Scanner;
 
 public class Hangman {
     private int correctLetters;
-    private String newWord;
-    private int lives;
-    String[] hangmanAscii;
     ArrayList<Character> guessedLetters;
 
-    Hangman() {
+    public Hangman() {
         guessedLetters = new ArrayList<>();
+        correctLetters = 0;
         int hangmanIndex = 0;
         int lives = 6;
 
@@ -27,9 +25,29 @@ public class Hangman {
 
     }
     public static String getWordFromPlayerOne() {
-        Scanner wordInput = new Scanner(System.in);
-        System.out.print("Player 1 give me a word: ");
-        return wordInput.nextLine().toLowerCase();
+        Scanner wordInputScanner = new Scanner(System.in);
+        String wordInput;
+        while (true){
+            System.out.print("Player 1 give me a word: ");
+            wordInput = wordInputScanner.nextLine();
+            if (wordInput.isEmpty()) {
+                System.out.println("You have to enter a word");
+                continue;
+            }
+            boolean valid = true;
+            for(int i = 0; i < wordInput.length(); i++) {
+                if (!Character.isLetter(wordInput.charAt(i))) {
+                    valid = false;
+                    System.out.println("Please Enter only valid letters");
+                    break;
+                }
+            }
+            if (!valid) {
+                continue;
+            }
+            break;
+        }
+        return wordInput.toLowerCase();
     }
     public static char[] createWordBoard(String word) {
         char[] wordBoard = new char[word.length()];
@@ -52,17 +70,25 @@ public class Hangman {
         return count;
     }
     private void startGameLoop(String word, char[] wordBoard, int numberOfLetters, int hangmanIndex, int lives, String[] hangmanAscii) {
+        Scanner guessInputScanner = new Scanner(System.in);
+        String guessInput;
         while (true) {
             if (numberOfLetters == correctLetters) {
                 playerTwoWins();
                 break;
             }
-            Scanner guessInput = new Scanner(System.in);
             System.out.print("Player 2 Provide me with a letter: ");
-            char letter = guessInput.next().charAt(0);
+            guessInput = guessInputScanner.next().toLowerCase();
+            if (guessInput.length() > 1) {
+                System.out.println("Invalid Input, Please enter ONE letter");
+                continue;
+            }
+            char letter = guessInput.charAt(0);
             if (!Character.isLetter(letter)) {
+                System.out.println("Invalid Input, Please enter a valid letter");
                 continue;
             } else if(guessedLetters.contains(letter)) {
+                System.out.println("Invalid Input, Already Guessed letter");
                 continue;
             }
             guessedLetters.add(letter);
@@ -87,7 +113,7 @@ public class Hangman {
         }
     }
     private static void playerOneWins() {
-        System.out.println("Congratulations you beat player 1 YAYYYYY");
+        System.out.println("Congratulations you beat player 2 YAYYYYY");
     }
     private static void playerTwoWins() {
         System.out.println("Congratulations you beat player 1 YAYYYYY");
