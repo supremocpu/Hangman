@@ -1,3 +1,4 @@
+import java.io.Console;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -25,11 +26,18 @@ public class Hangman {
 
     }
     public static String getWordFromPlayerOne() {
-        Scanner wordInputScanner = new Scanner(System.in);
+        Console console = System.console();
         String wordInput;
+        Scanner wordInputScanner = new Scanner(System.in);
         while (true){
-            System.out.print("Player 1 give me a word: ");
-            wordInput = wordInputScanner.nextLine();
+            //Tries to hide player 1's word but in most cases IDE's don't hide input from user
+            if (console != null) {
+                char[] passwordChars = console.readPassword("Player 1 give me a word (hidden): ");
+                wordInput = new String(passwordChars);
+            } else {
+                System.out.print("Player 1 give me a word: ");
+                wordInput = wordInputScanner.nextLine();
+            }
             if (wordInput.isEmpty()) {
                 System.out.println("You have to enter a word");
                 continue;
@@ -88,7 +96,7 @@ public class Hangman {
                 System.out.println("Invalid Input, Please enter a valid letter");
                 continue;
             } else if(guessedLetters.contains(letter)) {
-                System.out.println("Invalid Input, Already Guessed letter");
+                System.out.println("Invalid Input, Already Guessed: " + guessedLetters);
                 continue;
             }
             guessedLetters.add(letter);
